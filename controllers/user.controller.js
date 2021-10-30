@@ -26,8 +26,9 @@ module.exports.createExercise = async (req, res) => {
   };
   const newExercise = await exerciseModel.create(exercise);
   const user = await userModel.findById(userId);
-  user.date = new Date(user.date).toDateString();
-  const resp = { ...newExercise.toObject(), ...user };
+  const exerciseObject = newExercise.toObject();
+  exerciseObject.date = new Date(newExercise.date).toDateString();
+  const resp = { ...newExercise, ...user };
   delete resp.__v;
   res.status(201).json(resp);
 };
