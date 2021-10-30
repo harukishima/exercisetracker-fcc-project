@@ -26,7 +26,10 @@ module.exports.createExercise = async (req, res) => {
   };
   const newExercise = await exerciseModel.create(exercise);
   const user = await userModel.findById(userId);
-  res.status(201).json({ ...newExercise.toObject(), ...user });
+  user.date = new Date(user.date).toDateString();
+  const resp = { ...newExercise.toObject(), ...user };
+  delete resp.__v;
+  res.status(201).json(resp);
 };
 
 module.exports.getLogs = async (req, res) => {
@@ -37,10 +40,14 @@ module.exports.getLogs = async (req, res) => {
   const exercises = await userModel.getLog(userId, from, to, limit);
   const resp = exercises[0];
   if (resp) {
-    resp.log.filter((exercise) => {
+    resp.log = resp.log.filter((exercise) => {
       const date = new Date(exercise.date);
       return date >= from && date <= to;
     });
+    resp.log = resp.log.map((exercise) => {
+      exercise.date = new Date(exercise.date).toDateString();
+      return exercise;
+    });
   }
-  res.status(200).json(exercises[0]);
+  res.status(200).json(resp);
 };
