@@ -30,9 +30,9 @@ module.exports.createExercise = async (req, res) => {
   exerciseObject.date = new Date(newExercise.date).toDateString();
   const resp = {
     ...user,
-    date: exercise.date,
-    duration: exercise.duration,
-    description: exercise.description,
+    date: exerciseObject.date,
+    duration: exerciseObject.duration,
+    description: exerciseObject.description,
   };
   delete resp.__v;
   res.status(201).json(resp);
